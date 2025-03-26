@@ -6,15 +6,6 @@ class Period{
     this.assignmentMaster = [];
   }
 
-  addStudent(studentToAdd){
-    this.array.push(studentToAdd);
-  }
-
-  removeStudent(studentsToRemove){
-    let n = this.array.indexOf(studentToRemove);
-    thisarray.slice(n, n);
-  }
-
   addAllStudents(nameArray){
     for(let i = 0; i < nameArray.length; i++){
         this.students.push(new Student(nameArray[i]))
@@ -35,11 +26,12 @@ class Period{
     }
   }
 
-  clearAllStudents(){
-    this.students = [];
+  calculateTotal(student) {
+    return student.assignments.reduce((total, assignment) => total + parseInt(assignment.points, 10), 0);
   }
-    
+  
 }
+
 
 class Student{
     constructor (name){
@@ -51,7 +43,7 @@ class Student{
 class Assignment{
     constructor(name,points){
         this.name = name;
-        this.ponts = points;
+        this.points = points;
     }
 
 }
@@ -68,35 +60,42 @@ let periodTwo = [ "Amornpan Nowie","Ballard Willa","Bhandari Aarushi","Buffingto
 
 let assignments = ["table rewards", "sub", "Mr.smith presentation"];
 let points = [2,4,6];
+let sum = points.reduce((partialSum, a) => partialSum + a, 0);
+let whichPeriod;
 
-let p1 = new Period("Period 1", periodOne);
-let p2 = new Period("Period 2", periodTwo);
+let p1 = new Period("Period 1");
+let p2 = new Period("Period 2");
 
-p1.addAllStudents(periodOne);
-p1.addAllAssignments(assignments,points)
-p1.addAssignmentsToStudents();
+if(!localStorage.getItem("p1")){
+  p1.addAllStudents(periodOne);
+  p1.addAllAssignments(assignments,points)
+  p1.addAssignmentsToStudents();
+} else {
+  p1 = JSON.parse(localStorage.getItem("p1"))
+}
 
-console.log(p1)
+if(!localStorage.getItem("p2")){
+
+  p2.addAllStudents(periodTwo);
+  p2.addAllAssignments(assignments,points)
+  p2.addAssignmentsToStudents();
+} else {
+  p2 = JSON.parse(localStorage.getItem("p2"))
+}
+
+
 
 document.getElementById("Print Student List").addEventListener("click",start);
 
 function start(){
-    p = document.getElementById("Periods").value;
-    if (p == "period1") {
-        whichPeriod = 1;
-        students = periodOne;
-    } else if (p == "period2") {
-        whichPeriod = 2;
-        students = periodTwo;
-    }
-      
-    let html= "";
-
-    for(let i = 0; i < students.length; i++){
-        html += "<div id=" + i + " onclick='selectStudent(this)'>" + students[i] + "</div>" 
-    }      
-
-    document.getElementById("Student Selected").innerHTML = html;
+  let p = document.getElementById("Periods").value;
+  if (p == "period1") {
+      whichPeriod = 1;
+      buildTable(p1, true);
+  } else if (p == "period2") {
+      whichPeriod = 2;
+      buildTable(p2, true);
+  }
 }
    
 function selectStudent(div) {
@@ -110,10 +109,120 @@ function selectStudent(div) {
         }
     }
 
-    
-
-
-        //change the student selected div value from the list to the individual student
-
-        // div.innerHTML = students[div.id]
 }
+
+
+
+
+
+
+function saveToStorage(){
+  localStorage.setItem("p1",JSON.stringify(p1))
+  localStorage.setItem("p2",JSON.stringify(p2))
+
+  console.log(localStorage)
+}
+
+function buildTable(period, edit) {
+  let html = "<table>";
+  html += "<tr><th>Student</th>";
+
+
+  let totalPointsForPeriod = period.assignmentMaster.reduce((sum, assignment) => sum + parseInt(assignment.points, 10), 0);
+
+  for (let j = 0; j < period.assignmentMaster.length; j++) {
+    html += "<th>" + period.assignmentMaster[j].name + "</th>";
+  }
+
+  html += "<th>Total Points</th>";
+  html += "<th>Extra Credit Percentage</th>";
+  html += "</tr>";
+
+  for (let i = 0; i < period.students.length; i++) {
+    html += "<tr>";
+    html += "<td>" + period.students[i].name + "</td>";
+    let totalPoints = 0;
+
+    for (let j = 0; j < period.students[i].assignments.length; j++) {
+      let assignment = period.students[i].assignments[j];
+
+      if (edit) {
+        html += `<td><input class='${assignment.name}' id='${i}-${j}' value='${assignment.points}'></td>`;
+      } else {
+        html += `<td>${assignment.points}</td>`;
+      }
+      totalPoints += parseInt(assignment.points, 10);
+    }
+
+    html += `<td>${totalPoints}</td>`;
+
+    
+    let extraCreditPercentage = (totalPoints / totalPointsForPeriod) * 100;
+    html += `<td>${extraCreditPercentage.toFixed(2)}%</td>`;
+
+    html += "</tr>";
+  }
+
+  html += "</table>";
+  document.getElementById("dataTable").innerHTML = html;
+}
+
+function saveScores(){
+  
+  let p = (whichPeriod == 1) ? p1 : p2; 
+
+  for (let i = 0; i < p.assignmentMaster.length; i++) { 
+      let e = document.getElementsByClassName(p.assignmentMaster[i].name);
+      
+      for (let j = 0; j < e.length; j++) { 
+          p.students[j].assignments[i].points = parseInt(e[j].value, 10); 
+      }
+  }
+
+  saveToStorage(); 
+  buildTable(p, false); 
+  
+}
+
+
+
+function addNewCredit() {
+  let assignmentName = prompt("Enter the name of the new extra credit assignment:");
+  let points = parseInt(prompt("Enter the points for this assignment:"), 10);
+  let newAssignment = new Assignment(assignmentName, points);
+
+  let selectedPeriod = (whichPeriod == 1) ? p1 : p2;
+
+  selectedPeriod.assignmentMaster.push(newAssignment);
+
+  for (let i = 0; i < selectedPeriod.students.length; i++) {
+    selectedPeriod.students[i].assignments.push(new Assignment(assignmentName, points));
+  }
+
+  
+  buildTable(selectedPeriod, true);
+  saveToStorage();
+}
+
+
+function removeExtraCredit(){
+   let assignmentName = prompt("Enter the name of the extra credit assignment you would like to remove:");
+   let selectedPeriod = (whichPeriod == 1) ? p1 : p2;
+   let assignmentIndex = selectedPeriod.assignmentMaster.findIndex(assignment => assignment.name == assignmentName);
+ 
+   if (assignmentIndex !== -1) {
+    let pointsToRemove = selectedPeriod.assignmentMaster[assignmentIndex].points;
+     selectedPeriod.assignmentMaster.splice(assignmentIndex, 1);
+
+     for (let i = 0; i < selectedPeriod.students.length; i++) {
+       selectedPeriod.students[i].assignments = selectedPeriod.students[i].assignments.filter(assignment => assignment.name !== assignmentName);
+     }
+     
+     sum -= pointsToRemove;
+     buildTable(selectedPeriod, true);
+     saveToStorage();
+   } else {
+     alert("Assignment not found. Please ensure you entered the correct name.");
+   }
+  }
+

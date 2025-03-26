@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Extra Credit Calculator</title>
-    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
  <body>
 
@@ -18,26 +18,31 @@
 
 
 <!-- try the more advanced button system from classroom instead of this! jsdjdlad-->
-<select id="Quarters">
+<!-- <select id="Quarters">
   <option value="Quarter1">Quarter 1</option>
   <option value="Quarter2">Quarter 2</option>
   <option value="Quarter3">Quarter 3</option>
   <option value="Quarter4">Quarter 4</option>
   
-</select>
+</select> -->
 
 <button id="Print Student List">Print Student List </button>
 
-<h3>Students Selected</h3>
 
-<div id="Student Selected"></div>
+
+
 
 <div id="printword"></div>
 
-<h4>Extra credit earned</h4>
-<div id="extra credit earned"></div>
+<h4>Data table</h4>
+<div id="dataTable"></div>
 
 
+<button onclick="saveScores()">Save</button>
+
+<button onclick="addNewCredit()">Add New Extra Credit</button>
+
+<button onclick="removeExtraCredit()">Remove Extra Credit </button>
 
 <script src="script.js"></script>
 

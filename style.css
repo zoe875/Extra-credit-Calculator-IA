@@ -1,24 +1,106 @@
-body {
-    background-color: pink;
-    font-family:  "Copperplate";
-    font-size: 45px;
+
+ body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #d4edda; /* Pastel green */
+    color: #333;
+    text-align: center;
+    margin: 20px;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
     text-align: center;
 }
 
-h1{
-	text-align: center;
-	text-weight: bold;
+th {
+    background-color: #8fd19e; /* Slightly darker pastel green */
+    color: #fff;
+    font-size: 18px;
+}
+
+td {
+    transition: background 0.3s ease-in-out;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa; /* Light gray alternate rows */
+}
+
+tr:hover {
+    background-color: #c3e6cb;
+    transform: scale(1.01);
+}
+
+td input {
+    width: 50px;
+    text-align: center;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+td input:focus {
+    outline: none;
+    border-color: #6abf69;
+    box-shadow: 0px 0px 5px rgba(106, 191, 105, 0.5);
 }
 
 button {
-    width: 140px;
-    color: black;
+    background-color: #6abf69; /* Pastel green */
+    color: white;
+    border: none;
+    padding: 12px 18px;
     font-size: 16px;
- }
- 
- select { 
-    width: 140px;
-    color: black;
-    font-size: 16px;
- 
- }
+    cursor: pointer;
+    margin: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+button:hover {
+    background-color: #57a657;
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+select, input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease-in-out;
+}
+
+select:focus, input:focus {
+    border-color: #6abf69;
+    box-shadow: 0px 0px 5px rgba(106, 191, 105, 0.5);
+}
+
+#dataTable {
+    margin-top: 20px;
+}
+
+/* Cool Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
